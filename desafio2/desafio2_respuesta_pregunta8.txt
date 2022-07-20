@@ -1,0 +1,2 @@
+pregunta 8:
+La incongruencia de las fechas en el último avistamiento y la fecha de muerte se da por el ingreso de un avistamiento con una fecha mayor a la fecha reportada en la muerte del mismo titán.

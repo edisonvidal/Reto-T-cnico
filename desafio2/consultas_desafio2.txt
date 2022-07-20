@@ -1,0 +1,51 @@
+Querys
+
+pregunta 1:
+SELECT a.nombre, a.altura, b.fecha FROM titanes a
+INNER JOIN muertes b ON a.id = b.id_titan
+WHERE b.causa = "Accidente" ORDER BY b.fecha ASC;
+
+pregunta 2:
+SELECT a.nombre, a.altura, b.nombre AS batallón FROM
+(SELECT b.id AS id_muerte,a.nombre, a.altura, b.fecha FROM titanes a 
+INNER JOIN muertes b ON a.id = b.id_titan
+WHERE b.causa = "Asesinato") a
+INNER JOIN
+(SELECT DISTINCT a.id_muerte,b.nombre FROM movimientos_recursos a 
+INNER JOIN movimientos b ON a.id_movimiento = b.id) b ON a.id_muerte = b.id_muerte LIMIT 1;
+
+pregunta 3:
+SELECT * FROM (
+SELECT a.id, a.nombre, a.altura, MAX(b.fecha) AS fecha FROM titanes a 
+INNER JOIN avistamientos b ON a.id = b.id_titan
+GROUP BY a.id) a
+WHERE a.id not in(SELECT a.id FROM titanes a 
+INNER JOIN muertes b ON a.id = b.id_titan) ORDER BY a.altura DESC;
+
+pregunta 4:
+SELECT a.id, a.nombre FROM (SELECT a.id, a.nombre, IF(COUNT(a.id) >= 2,1,0) as bc  FROM titanes a 
+INNER JOIN avistamientos b ON a.id = b.id_titan
+WHERE YEAR(b.fecha) = 2022 GROUP BY a.id) a
+WHERE a.bc = 1;
+
+pregunta 5:
+SELECT b.nombre,SUM(a.cantidad) AS cantidad, b.unidad FROM movimientos_recursos a 
+INNER JOIN recursos b on a.id_recurso = b.id
+WHERE a.id_muerte in(SELECT b.id FROM titanes a 
+INNER JOIN muertes b ON a.id = b.id_titan
+WHERE b.causa = "Asesinato" AND a.altura <= 5) GROUP BY b.nombre;
+
+pregunta 6:
+SELECT b.nombre FROM movimientos_recursos a 
+INNER JOIN recursos b on a.id_recurso = b.id
+WHERE a.id_muerte in(SELECT b.id FROM titanes a 
+INNER JOIN muertes b ON a.id = b.id_titan
+WHERE b.causa = "Asesinato" AND a.altura = 9) GROUP BY b.nombre;
+
+pregunta 7:
+SELECT a.id_titan, a.avistamiento, b.muerte FROM (SELECT a.id_titan, MAX(a.fecha) AS avistamiento FROM avistamientos a 
+GROUP BY a.id_titan) a
+
+INNER JOIN (SELECT a.id_titan,a.fecha AS muerte FROM muertes a 
+WHERE a.causa = "Asesinato") b ON a.id_titan = b.id_titan
+WHERE a.avistamiento > b.muerte;

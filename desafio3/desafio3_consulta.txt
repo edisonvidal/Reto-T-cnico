@@ -1,0 +1,4 @@
+desafio 3:
+SELECT b.nombre, COUNT(a.id_titan) AS muerte FROM muertes a 
+INNER JOIN habitantes b ON a.id_habitantes = b.id
+WHERE a.causa = "Asesinato" GROUP BY b.id LIMIT 1;
